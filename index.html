@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cyber Ink Studio — тату-студия в Бишкеке</title>
+<meta name="description" content="Cyber Ink Studio: тату в Бишкеке с AR-примеркой эскиза, AI-эскизами и стерильностью медицинского уровня. Бесплатная консультация.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🖋</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Unbounded:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+/* ===== Переменные и сброс ===== */
+:root{--bg:#0d0d11;--pl:#1e1e24;--vio:#8b5cf6;--cy:#06b6d4;--white:#fff;--text:#d4d4d8;--muted:#a1a1aa;--line:rgba(255,255,255,.08);--grad:linear-gradient(120deg,#8b5cf6,#06b6d4);
+--neu:8px 8px 22px #07070a,-6px -6px 18px #17171d}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
+body{font-family:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);line-height:1.65;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradient(55vw 45vh at 90% 5%,rgba(139,92,246,.2),transparent 70%),radial-gradient(50vw 45vh at 0% 55%,rgba(6,182,212,.1),transparent 70%)}
+a{color:inherit;text-decoration:none}
+svg{max-width:100%}
+.wrap{width:min(1160px,100% - 40px);margin-inline:auto}
+section{padding:96px 0}
+h1,h2,h3,.logo{font-family:'Unbounded','Plus Jakarta Sans',sans-serif;color:var(--white);line-height:1.15}
+h2{font-size:clamp(1.7rem,3.6vw,2.6rem);font-weight:700;margin-bottom:14px}
+h3{font-size:1rem;font-weight:700;margin-bottom:8px}
+p{color:var(--muted);margin-bottom:12px}
+.lead{font-size:1.06rem;max-width:62ch}
+.head{margin-bottom:44px}
+.grad{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.note{font-size:.84rem}
+:focus-visible{outline:2px solid var(--cy);outline-offset:3px}
+
+/* ===== Кнопки с неоновым свечением ===== */
+.btn{display:inline-block;padding:14px 28px;border-radius:999px;border:1px solid transparent;background:var(--grad);color:#fff;font:700 .95rem 'Plus Jakarta Sans',sans-serif;cursor:pointer;transition:transform .25s,box-shadow .25s}
+.btn:hover{transform:translateY(-3px);box-shadow:0 0 0 3px rgba(139,92,246,.25),0 0 34px rgba(139,92,246,.7),0 0 60px rgba(6,182,212,.4)}
+.btn-ghost{background:transparent;border-color:rgba(255,255,255,.25)}
+.btn-ghost:hover{border-color:var(--cy);box-shadow:0 0 30px rgba(6,182,212,.5)}
+.btn-sm{padding:9px 20px;font-size:.85rem}
+
+/* ===== Шапка ===== */
+header{position:fixed;inset:0 0 auto;z-index:50;border-bottom:1px solid transparent;transition:.3s}
+header.sc{background:rgba(13,13,17,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-color:var(--line)}
+.nav{display:flex;align-items:center;justify-content:space-between;height:72px;gap:20px}
+.logo{font-weight:900;font-size:1rem;letter-spacing:.03em}
+.logo b{color:var(--cy)}
+.menu{display:flex;gap:22px;list-style:none;font-size:.9rem;font-weight:600}
+.menu a{color:var(--muted);transition:color .2s}
+.menu a:hover{color:var(--white)}
+.burger{display:none;background:none;border:0;width:42px;height:42px;cursor:pointer;flex-direction:column;justify-content:center;align-items:center;gap:6px}
+.burger span{width:24px;height:2px;background:#fff;transition:.3s}
+.burger.open span:nth-child(1){transform:translateY(8px) rotate(45deg)}
+.burger.open span:nth-child(2){opacity:0}
+.burger.open span:nth-child(3){transform:translateY(-8px) rotate(-45deg)}
+
+/* ===== Главный экран ===== */
+.hero{min-height:100vh;display:flex;align-items:center;padding:130px 0 80px;position:relative;overflow:hidden}
+.hero-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:48px;align-items:center}
+.tag{display:inline-block;padding:7px 16px;border-radius:99px;border:1px solid var(--line);background:rgba(6,182,212,.08);color:var(--cy);font-size:.85rem;font-weight:600;margin-bottom:22px}
+.hero h1{font-size:clamp(2rem,5.2vw,3.9rem);font-weight:900;letter-spacing:-.02em}
+.hero .lead{margin:22px 0 32px;font-size:1.12rem}
+.scan{position:relative;padding:26px;border-radius:24px;background:rgba(30,30,36,.6);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--line);box-shadow:var(--neu)}
+.scan .art{aspect-ratio:1;border-radius:16px;position:relative;overflow:hidden;border:1px dashed rgba(6,182,212,.5)}
+.scan .art::after{content:"";position:absolute;left:0;right:0;height:3px;background:var(--cy);box-shadow:0 0 18px var(--cy);animation:scan 3.4s ease-in-out infinite alternate}
+@keyframes scan{from{top:4%}to{top:94%}}
+.scan p{margin:16px 0 0;font-size:.9rem;text-align:center}
+
+/* ===== Сетки, карточки (неоморфизм + стекло) ===== */
+.grid{display:grid;gap:22px}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
+.card{background:var(--pl);border:1px solid var(--line);border-radius:20px;padding:28px;box-shadow:var(--neu);transition:transform .3s,border-color .3s,box-shadow .3s}
+.card:hover{transform:translateY(-5px);border-color:rgba(139,92,246,.6);box-shadow:var(--neu),0 0 34px rgba(139,92,246,.22)}
+.card p{margin:0;font-size:.93rem}
+.card a:hover{color:var(--cy)}
+.ic{display:grid;place-items:center;width:48px;height:48px;border-radius:14px;background:var(--grad);color:#fff;font-size:1.25rem;margin-bottom:16px;box-shadow:0 0 20px rgba(139,92,246,.4)}
+.glass{background:rgba(30,30,36,.55);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.feat{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+/* ===== Каталог стилей с ценами ===== */
+.style{background:var(--pl);border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:var(--neu);display:flex;flex-direction:column;transition:transform .3s,border-color .3s}
+.style:hover{transform:translateY(-6px);border-color:rgba(6,182,212,.6)}
+.art{display:grid;place-items:center;color:#67e8f9;background:radial-gradient(circle at 50% 40%,rgba(139,92,246,.35),rgba(6,182,212,.08) 65%,transparent 80%),#15151a}
+.art svg{width:58%;height:58%;transition:transform .6s}
+.style:hover .art svg{transform:scale(1.12) rotate(-4deg)}
+.style .art{aspect-ratio:16/10}
+.style .b{padding:22px;display:flex;flex-direction:column;flex:1}
+.style p{flex:1;font-size:.92rem;margin-bottom:16px}
+.price{font-family:'Unbounded',sans-serif;font-size:1.05rem;font-weight:700;color:var(--white)}
+.price small{font-family:'Plus Jakarta Sans',sans-serif;font-weight:600;font-size:.78rem;color:var(--muted)}
+.style .row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+
+/* ===== Статистика ===== */
+.stats{padding:64px 0;background:rgba(30,30,36,.5);border-block:1px solid var(--line)}
+.stat{text-align:center}
+.stat b{display:block;font-family:'Unbounded',sans-serif;font-size:clamp(1.9rem,4vw,3rem);line-height:1.2;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.stat span{color:var(--muted);font-size:.92rem}
+
+/* ===== Отзывы ===== */
+.stars{color:var(--cy);letter-spacing:3px;margin-bottom:12px}
+.who{margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
+.who b{display:block;color:var(--white)}
+.who span{font-size:.85rem;color:var(--muted)}
+
+/* ===== Форма ===== */
+.book{display:grid;grid-template-columns:.9fr 1.1fr;gap:44px;padding:48px;border-radius:26px;border:1px solid var(--line);background:linear-gradient(145deg,rgba(139,92,246,.18),rgba(6,182,212,.08) 55%,var(--pl));box-shadow:var(--neu)}
+.ticks{list-style:none;margin-top:22px}
+.ticks li{padding:7px 0;color:var(--muted)}
+.ticks li::before{content:"✓";color:var(--cy);font-weight:800;margin-right:10px}
+form{display:grid;gap:16px}
+label{display:block;font-size:.85rem;font-weight:600;margin-bottom:6px;color:#fff}
+input,select,textarea{width:100%;padding:13px 16px;border-radius:14px;border:1px solid var(--line);background:#0d0d11;color:#fff;font:inherit;color-scheme:dark;box-shadow:inset 4px 4px 10px #060609,inset -3px -3px 8px #181820;transition:border .2s,box-shadow .2s}
+input:focus,select:focus,textarea:focus{outline:0;border-color:var(--vio);box-shadow:0 0 0 3px rgba(139,92,246,.3)}
+textarea{resize:vertical;min-height:100px}
+input[type=file]{padding:10px;font-size:.88rem}
+small.e{display:none;color:#fca5a5;font-size:.8rem;margin-top:5px}
+.field.bad input,.field.bad select,.field.bad textarea{border-color:#ef4444}
+.field.bad small.e{display:block}
+form .btn{width:100%}
+
+/* ===== Подвал ===== */
+footer{border-top:1px solid var(--line);padding:56px 0 28px;background:rgba(30,30,36,.35)}
+.foot{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:40px;margin-bottom:30px}
+.foot .logo{display:inline-block;margin-bottom:12px}
+.foot h4{color:#fff;margin-bottom:14px;font-family:'Unbounded',sans-serif;font-size:.9rem}
+.foot ul{list-style:none;display:grid;gap:8px;color:var(--muted);font-size:.92rem}
+.foot a:hover{color:var(--cy)}
+.disc{border:1px solid var(--line);border-radius:14px;padding:16px 20px;font-size:.82rem;color:var(--muted);margin-bottom:24px}
+.copy{border-top:1px solid var(--line);padding-top:22px;color:var(--muted);font-size:.84rem;text-align:center}
+
+/* ===== Модальное окно ===== */
+.modal{position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:20px;background:rgba(5,5,8,.8);backdrop-filter:blur(6px);opacity:0;visibility:hidden;transition:.3s}
+.modal.show{opacity:1;visibility:visible}
+.box{max-width:440px;width:100%;padding:38px;text-align:center;border-radius:24px;background:var(--pl);border:1px solid rgba(139,92,246,.5);box-shadow:0 0 60px rgba(139,92,246,.35);transform:scale(.9);transition:transform .3s}
+.modal.show .box{transform:none}
+.ok{width:68px;height:68px;margin:0 auto 18px;border-radius:50%;background:var(--grad);display:grid;place-items:center;font-size:2rem;color:#fff;box-shadow:0 0 30px rgba(6,182,212,.6)}
+.box p{margin:10px 0 24px}
+
+/* ===== Появление при прокрутке ===== */
+.rv{opacity:0;transform:translateY(30px);transition:opacity .8s,transform .8s}
+.rv.in{opacity:1;transform:none}
+
+/* ===== Адаптивность ===== */
+@media(max-width:960px){
+.hero-grid,.two,.book{grid-template-columns:1fr}
+.g3,.g4{grid-template-columns:repeat(2,1fr)}
+.foot{grid-template-columns:1fr 1fr}
+}
+@media(max-width:860px){
+.burger{display:flex}
+.hide-m{display:none}
+.menu{position:fixed;inset:72px 0 auto;flex-direction:column;gap:0;background:rgba(13,13,17,.97);padding:8px 20px 24px;border-bottom:1px solid var(--line);transform:translateY(-130%);transition:transform .4s;z-index:-1}
+.menu.open{transform:none}
+.menu a{display:block;padding:14px 0;border-bottom:1px solid var(--line);font-size:1rem}
+}
+@media(max-width:600px){
+section{padding:68px 0}
+.g2,.g3,.feat,.foot{grid-template-columns:1fr}
+.stats .g4{grid-template-columns:1fr 1fr}
+.book{padding:28px 20px}
+.hero .btn{width:100%;text-align:center;margin-bottom:10px}
+}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}html{scroll-behavior:auto}.rv{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<!-- Шапка -->
+<header id="header">
+ <div class="wrap nav">
+  <a href="#hero" class="logo">CYBER<b>INK</b>STUDIO</a>
+  <nav><ul class="menu" id="menu">
+   <li><a href="#about">О студии</a></li><li><a href="#services">Услуги</a></li><li><a href="#tech">Технологии</a></li>
+   <li><a href="#styles">Стили</a></li><li><a href="#reviews">Отзывы</a></li><li><a href="#contacts">Контакты</a></li>
+  </ul></nav>
+  <a href="#booking" class="btn btn-sm hide-m">Консультация</a>
+  <button class="burger" id="burger" aria-label="Открыть меню" aria-expanded="false"><span></span><span></span><span></span></button>
+ </div>
+</header>
+
+<main>
+<!-- 1. Главный экран -->
+<section class="hero" id="hero">
+ <div class="wrap hero-grid">
+  <div>
+   <span class="tag rv">Cyber Ink Studio · Бишкек</span>
+   <h1 class="rv"><span class="grad">Твоя идея. Наш стиль.</span> Твоё тату в Бишкеке</h1>
+   <p class="lead rv">Примерьте эскиз на своём теле в 3D и AR ещё до первого прокола. Работаем в условиях операционной чистоты: одноразовые инструменты, автоклав класса B и гипоаллергенные пигменты.</p>
+   <div class="rv"><a href="#styles" class="btn">Каталог стилей</a> <a href="#booking" class="btn btn-ghost">Записаться на консультацию</a></div>
+  </div>
+  <div class="scan rv"><div class="art" data-art="mandala"></div><p>AR-примерка: эскиз ложится точно по анатомии</p></div>
+ </div>
+</section>
+
+<!-- 2. О студии -->
+<section id="about">
+ <div class="wrap two">
+  <div class="rv">
+   <h2>О <span class="grad">студии</span></h2>
+   <p class="lead">Cyber Ink Studio объединяет классическую художественную школу и цифровой дизайн, чтобы татуировка выглядела так, как вы её представляли.</p>
+   <p>Наша миссия: сделать татуировку осознанным решением. Вы видите эскиз на своём теле, правите его вместе с мастером и только потом начинаете сеанс.</p>
+   <p>Мастера студии закончили художественные вузы и колледжи, поэтому каждый эскиз мы разрабатываем индивидуально, без шаблонов из интернета. Безопасность для нас не опция: стерильность проверяется перед каждым клиентом.</p>
+  </div>
+  <div class="feat rv">
+   <div class="card glass"><span class="ic">🎨</span><h3>Художественная школа</h3><p>Композиция, цвет и анатомия в каждой работе.</p></div>
+   <div class="card glass"><span class="ic">💠</span><h3>Цифровой дизайн</h3><p>3D-модели и AI-варианты эскиза.</p></div>
+   <div class="card glass"><span class="ic">🛡</span><h3>Безопасность</h3><p>Одноразовые материалы и автоклав.</p></div>
+   <div class="card glass"><span class="ic">✍</span><h3>Свой эскиз</h3><p>Рисуем с нуля под вашу идею.</p></div>
+  </div>
+ </div>
+</section>
+
+<!-- 3. Услуги -->
+<section id="services">
+ <div class="wrap">
+  <div class="head rv"><h2>Наши <span class="grad">услуги</span></h2><p class="lead">От первой маленькой татуировки до масштабных проектов и исправления старых работ.</p></div>
+  <div class="grid g3">
+   <article class="card rv"><span class="ic">🖋</span><h3>Художественная татуировка</h3><p>Микрореализм, графика, орнаменты, акварель и любой другой стиль по вашему эскизу.</p></article>
+   <article class="card rv"><span class="ic">🧬</span><h3>Уникальный 3D/AI-эскиз</h3><p>Разрабатываем эскиз с учётом формы вашего тела и показываем его в 3D до начала работы.</p></article>
+   <article class="card rv"><span class="ic">♻</span><h3>Cover-Up и реставрация</h3><p>Перекрываем неудачные татуировки и обновляем выцветшие линии и цвет.</p></article>
+   <article class="card rv"><span class="ic">⚡</span><h3>Лазерное удаление и осветление</h3><p>Осветляем рисунок под перекрытие или полностью удаляем его. Количество процедур зависит от пигмента.</p></article>
+   <article class="card rv"><span class="ic">💎</span><h3>Пирсинг</h3><p>Прокол мочки, хряща и других зон стерильной иглой. Украшения из титана и золота.</p></article>
+   <article class="card rv"><span class="ic">💬</span><h3>Консультация</h3><p>Бесплатно обсудим идею, размер, место и подберём мастера под ваш стиль.</p></article>
+  </div>
+ </div>
+</section>
+
+<!-- 4. Инновации и безопасность -->
+<section id="tech">
+ <div class="wrap">
+  <div class="head rv"><h2>Инновации и <span class="grad">безопасность</span></h2><p class="lead">Технологии помогают предсказуемому результату, а медицинские стандарты защищают ваше здоровье.</p></div>
+  <div class="grid g2">
+   <article class="card glass rv"><span class="ic">🧠</span><h3>Нейросети подбирают эскиз под анатомию</h3><p>Мы генерируем варианты рисунка и подстраиваем их под изгибы руки, ноги или спины, чтобы линии выглядели естественно в движении.</p></article>
+   <article class="card glass rv"><span class="ic">📱</span><h3>AR-примерка на смартфоне</h3><p>Наведите камеру на нужное место, и эскиз появится на коже. Размер и положение можно поменять прямо на консультации.</p></article>
+   <article class="card glass rv"><span class="ic">🧪</span><h3>Одноразовое оборудование и автоклав класса B</h3><p>Иглы, картриджи, перчатки и защитные плёнки открываются при вас. Многоразовые инструменты проходят автоклавирование класса B.</p></article>
+   <article class="card glass rv"><span class="ic">🌿</span><h3>Гипоаллергенные органические пигменты</h3><p>Работаем с красками производителей из США и Европы, у которых есть сертификаты и маркировка партий.</p></article>
+  </div>
+ </div>
+</section>
+
+<!-- 5. Галерея стилей с ценами -->
+<section id="styles">
+ <div class="wrap">
+  <div class="head rv"><h2>Галерея работ и <span class="grad">стили</span></h2><p class="lead">Ориентировочные цены в сомах. Точную стоимость назовёт мастер после консультации, она зависит от размера и сложности.</p></div>
+  <div class="grid g3">
+   <article class="style rv"><div class="art" data-art="eye"></div><div class="b"><h3>Микрореализм</h3><p>Мелкие детали и плавные переходы на небольшой площади: портреты, глаза, животные. Работа тонкой иглой, заживает за 2–3 недели.</p><div class="row"><div class="price"><small>от</small> 4 500 KGS</div><a href="#booking" class="btn btn-sm" data-s="Микрореализм">Записаться</a></div></div></article>
+   <article class="style rv"><div class="art" data-art="geo"></div><div class="b"><h3>Графика / Blackwork</h3><p>Чёткие линии, штриховка и плотные чёрные заливки. Хорошо читается издалека и со временем сохраняет контраст.</p><div class="row"><div class="price"><small>от</small> 3 500 KGS</div><a href="#booking" class="btn btn-sm" data-s="Графика / Blackwork">Записаться</a></div></div></article>
+   <article class="style rv"><div class="art" data-art="snake"></div><div class="b"><h3>Авторский рукав (сеанс)</h3><p>Цельная композиция от плеча до запястья. Цена указана за один сеанс до 6 часов, рукав обычно делается за 3–5 сеансов.</p><div class="row"><div class="price">12 000 KGS</div><a href="#booking" class="btn btn-sm" data-s="Авторский рукав">Записаться</a></div></div></article>
+   <article class="style rv"><div class="art" data-art="wave"></div><div class="b"><h3>Cover-Up / Исправление</h3><p>Перекроем старую или неудачную работу. Стоимость зависит от размера и плотности прежнего рисунка.</p><div class="row"><div class="price"><small>от</small> 5 000 KGS</div><a href="#booking" class="btn btn-sm" data-s="Cover-Up / Исправление">Записаться</a></div></div></article>
+   <article class="style rv"><div class="art" data-art="flower"></div><div class="b"><h3>Разработка AI-эскиза</h3><p>Несколько вариантов рисунка под анатомию и 3D-просмотр на вашем теле. До трёх правок включено.</p><div class="row"><div class="price">Бесплатно <small>при записи</small></div><a href="#booking" class="btn btn-sm" data-s="Разработка AI-эскиза">Записаться</a></div></div></article>
+   <article class="style rv"><div class="art" data-art="moon"></div><div class="b"><h3>Минимализм и Fine Line</h3><p>Тонкие линии, символы и надписи. Лучший выбор для первой татуировки, сеанс занимает 30–90 минут.</p><div class="row"><div class="price"><small>от</small> 2 500 KGS</div><a href="#booking" class="btn btn-sm" data-s="Минимализм / Fine Line">Записаться</a></div></div></article>
+  </div>
+ </div>
+</section>
+
+<!-- 6. Статистика -->
+<section class="stats" id="stats">
+ <div class="wrap grid g4">
+  <div class="stat rv"><b><i data-count="3200" data-suf="+" style="font-style:normal">0</i></b><span>довольных клиентов</span></div>
+  <div class="stat rv"><b><i data-count="8" style="font-style:normal">0</i></b><span>мастеров с художественным образованием</span></div>
+  <div class="stat rv"><b><i data-count="100" data-suf="%" style="font-style:normal">0</i></b><span>стерильность</span></div>
+  <div class="stat rv"><b><i data-count="4.9" data-dec="1" data-suf="/5" style="font-style:normal">0</i></b><span>средняя оценка на Google и 2GIS</span></div>
+ </div>
+</section>
+
+<!-- 7. Отзывы -->
+<section id="reviews">
+ <div class="wrap">
+  <div class="head rv"><h2>Отзывы <span class="grad">клиентов</span></h2><p class="lead">Что говорят о нас жители Бишкека.</p></div>
+  <div class="grid g3">
+   <article class="card rv"><div class="stars">★★★★★</div><p>Боялась боли, поэтому тянула с первой татуировкой пару лет. Мастер объяснил каждый шаг, и я почти ничего не почувствовала. Заживает быстро, корочки почти не было.</p><div class="who"><b>Айдана Сыдыкова</b><span>Fine Line, запястье</span></div></article>
+   <article class="card rv"><div class="stars">★★★★★</div><p>Понравилось, что эскиз показали на мне через телефон. Мы сдвинули рисунок на два сантиметра, и он сел идеально. В студии чисто и тихо, ощущение как в хорошей клинике.</p><div class="who"><b>Бекзат Эркинов</b><span>Графика, предплечье</span></div></article>
+   <article class="card rv"><div class="stars">★★★★★</div><p>Много лет носила старую татуировку, которой стеснялась. Мне сделали перекрытие, и теперь на её месте красивый цветок. Через месяц всё зажило ровно, без шрамов.</p><div class="who"><b>Нургуль Мамытова</b><span>Cover-Up, плечо</span></div></article>
+   <article class="card rv"><div class="stars">★★★★★</div><p>Делал рукав в несколько сеансов. Атмосфера спокойная, музыка негромкая, можно делать перерывы. Цену назвали сразу и не меняли до конца работы.</p><div class="who"><b>Тилек Асанов</b><span>Авторский рукав</span></div></article>
+   <article class="card rv"><div class="stars">★★★★★</div><p>Пришла за микрореализмом, потому что хотела портрет бабушки. Результат очень похож на фото. Мастер дал подробную памятку по уходу и сам написал через неделю узнать, как заживает.</p><div class="who"><b>Элина Жумабекова</b><span>Микрореализм, плечо</span></div></article>
+   <article class="card rv"><div class="stars">★★★★☆</div><p>Работой доволен, а пирсинг прошёл аккуратно и быстро. Единственное, на выходные запись заполнена за две недели, так что планируйте заранее.</p><div class="who"><b>Азамат Кубанычбеков</b><span>Пирсинг</span></div></article>
+  </div>
+ </div>
+</section>
+
+<!-- 8. Форма записи -->
+<section id="booking">
+ <div class="wrap">
+  <div class="book rv">
+   <div>
+    <h2>Запишитесь на <span class="grad">консультацию</span></h2>
+    <p class="lead">Консультация бесплатна. Напишите идею, и мастер подготовит несколько вариантов эскиза к вашему визиту.</p>
+    <ul class="ticks"><li>Подтверждение записи в WhatsApp</li><li>AI-эскиз бесплатно при записи</li><li>Перенос возможен за 24 часа</li></ul>
+   </div>
+   <form id="form" novalidate>
+    <div class="field"><label for="name">Имя</label><input id="name" type="text" autocomplete="name" placeholder="Как к вам обращаться"><small class="e">Введите имя, минимум 2 буквы</small></div>
+    <div class="field"><label for="phone">Телефон</label><input id="phone" type="tel" autocomplete="tel" placeholder="+996 555 123 456"><small class="e">Введите номер в формате +996 XXX XXX XXX</small></div>
+    <div class="field"><label for="service">Услуга или стиль</label><select id="service"><option value="">Выберите услугу</option><option>Микрореализм</option><option>Графика / Blackwork</option><option>Авторский рукав</option><option>Cover-Up / Исправление</option><option>Разработка AI-эскиза</option><option>Минимализм / Fine Line</option><option>Лазерное удаление / осветление</option><option>Пирсинг</option></select><small class="e">Выберите услугу</small></div>
+    <div class="field"><label for="msg">Идея или сообщение</label><textarea id="msg" placeholder="Опишите идею, размер и место на теле"></textarea></div>
+    <div class="field"><label for="file">Прикрепить референс (по желанию)</label><input id="file" type="file" accept="image/*"><small class="e">Файл больше 5 МБ. Выберите изображение поменьше</small></div>
+    <button class="btn" type="submit">Записаться на бесплатную консультацию</button>
+    <p class="note">Нажимая кнопку, вы подтверждаете, что вам исполнилось 18 лет. Демо-форма: для реальной отправки подключите Formspree или свой сервер.</p>
+   </form>
+  </div>
+ </div>
+</section>
+
+<!-- 9. Контакты -->
+<section id="contacts">
+ <div class="wrap">
+  <div class="head rv"><h2>Как нас <span class="grad">найти</span></h2></div>
+  <div class="grid g3">
+   <div class="card rv"><h3>📍 Адрес</h3><p>г. Бишкек, ул. Киевская / ул. Тоголок Молдо</p><p style="margin-top:6px">Ориентир: вход со стороны двора, вывеска Cyber Ink Studio, 2 этаж. Рядом есть платная парковка.</p></div>
+   <div class="card rv"><h3>🕒 График</h3><p>Ежедневно 11:00–21:00</p><p style="margin-top:6px">Запись по предварительной договорённости.</p></div>
+   <div class="card rv"><h3>📞 Связь</h3><p><a href="tel:+996555123456">+996 555 123 456</a></p><p><a href="https://wa.me/996555123456" target="_blank" rel="noopener">WhatsApp</a></p><p><a href="mailto:hello@cyberink.kg">hello@cyberink.kg</a></p><p><a href="https://instagram.com/" target="_blank" rel="noopener">Instagram</a> · <a href="https://t.me/" target="_blank" rel="noopener">Telegram</a></p></div>
+  </div>
+ </div>
+</section>
+</main>
+
+<!-- 10. Подвал -->
+<footer>
+ <div class="wrap">
+  <div class="foot">
+   <div><a href="#hero" class="logo">CYBER<b>INK</b>STUDIO</a><p>Тату-студия в Бишкеке: AR-примерка, авторские эскизы и стерильность медицинского уровня.</p></div>
+   <div><h4>Навигация</h4><ul><li><a href="#about">О студии</a></li><li><a href="#services">Услуги</a></li><li><a href="#styles">Стили и цены</a></li><li><a href="#booking">Запись</a></li></ul></div>
+   <div><h4>Контакты</h4><ul><li>ул. Киевская / ул. Тоголок Молдо</li><li><a href="tel:+996555123456">+996 555 123 456</a></li><li><a href="mailto:hello@cyberink.kg">hello@cyberink.kg</a></li></ul></div>
+  </div>
+  <div class="disc"><b>18+.</b> Услуги оказываются только лицам старше 18 лет. Противопоказания к татуировке и пирсингу: сахарный диабет в стадии декомпенсации, нарушения свёртываемости крови, острые инфекции и воспаления кожи, онкологические заболевания, беременность и лактация, аллергия на компоненты пигментов. Перед сеансом проконсультируйтесь с врачом.</div>
+  <div class="copy">© <span id="year">2026</span> Cyber Ink Studio. Все права защищены. Бишкек, Кыргызстан.</div>
+ </div>
+</footer>
+
+<!-- Модальное окно -->
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mt">
+ <div class="box"><div class="ok">✓</div><h3 id="mt" style="font-size:1.4rem">Заявка отправлена!</h3><p id="mtext">Мы свяжемся с вами в WhatsApp.</p><button class="btn" id="close">Отлично</button></div>
+</div>
+
+<script>
+/* Cyber Ink Studio — интерактивность */
+(function () {
+  'use strict';
+  var $ = function (s, c) { return (c || document).querySelector(s); };
+  var $$ = function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
+
+  /* ===== Векторные иллюстрации (замените на свои фото при желании) ===== */
+  var S = 'fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"';
+  var ART = {
+    flower: '<path d="M50 92V52"/><path d="M50 70c-12-2-18-10-18-18 10 0 17 6 18 18zM50 62c10-2 16-9 16-16-9 0-15 5-16 16z"/><circle cx="50" cy="34" r="9"/><circle cx="50" cy="34" r="3"/><path d="M50 25c-8-10 0-18 0-18s8 8 0 18zM41 34c-10 0-14-8-14-8s10-2 14 8zM59 34c10 0 14-8 14-8s-10-2-14 8z"/>',
+    eye: '<path d="M8 50Q50 12 92 50Q50 88 8 50z"/><circle cx="50" cy="50" r="19"/><circle cx="50" cy="50" r="8" fill="currentColor"/><path d="M50 16v-8M28 24l-4-7M72 24l4-7M50 84v8M28 76l-4 7M72 76l4 7"/>',
+    geo: '<path d="M50 8l38 21v42L50 92 12 71V29z"/><path d="M50 8v84M12 29l76 42M88 29L12 71"/><path d="M50 28l20 11v22L50 72 30 61V39z" fill="currentColor" fill-opacity=".35"/>',
+    wave: '<path d="M8 62c14-22 28-22 42 0s28 22 42 0"/><path d="M8 48c14-22 28-22 42 0s28 22 42 0" opacity=".6"/><path d="M8 76c14-22 28-22 42 0s28 22 42 0" opacity=".6"/><circle cx="72" cy="22" r="9"/>',
+    snake: '<path d="M50 44a6 6 0 110 12 14 14 0 11-14-22 24 24 0 0138 6 34 34 0 01-60 14"/><path d="M14 66c-5 6-5 14 1 18s14 0 16-6"/><circle cx="19" cy="78" r="1.5" fill="currentColor"/>',
+    mandala: '<circle cx="50" cy="50" r="44"/><circle cx="50" cy="50" r="30"/><circle cx="50" cy="50" r="14"/><circle cx="50" cy="50" r="4" fill="currentColor"/><path d="M50 6v8M50 86v8M6 50h8M86 50h8M19 19l6 6M75 75l6 6M81 19l-6 6M25 75l-6 6"/><path d="M50 20c8 8 8 20 0 30-8-10-8-22 0-30zM50 80c8-8 8-20 0-30-8 10-8 22 0 30zM20 50c8-8 20-8 30 0-10 8-22 8-30 0zM80 50c-8 8-20 8-30 0 10-8 22-8 30 0z"/>',
+    moon: '<path d="M62 14a38 38 0 100 72 30 30 0 010-72z"/><circle cx="74" cy="30" r="2" fill="currentColor"/><circle cx="82" cy="52" r="1.5" fill="currentColor"/><circle cx="70" cy="70" r="2" fill="currentColor"/>'
+  };
+  $$('[data-art]').forEach(function (el) {
+    el.innerHTML = '<svg viewBox="0 0 100 100" ' + S + ' aria-hidden="true">' + ART[el.dataset.art] + '</svg>';
+  });
+
+  /* ===== Мобильное меню и плавная прокрутка ===== */
+  var burger = $('#burger'), menu = $('#menu');
+  function closeMenu() { burger.classList.remove('open'); menu.classList.remove('open'); burger.setAttribute('aria-expanded', 'false'); }
+  burger.addEventListener('click', function () {
+    var o = burger.classList.toggle('open'); menu.classList.toggle('open', o); burger.setAttribute('aria-expanded', o);
+  });
+  $$('a[href^="#"]').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      var id = a.getAttribute('href'); if (id.length < 2) return;
+      var t = $(id); if (!t) return;
+      e.preventDefault(); closeMenu();
+      window.scrollTo({ top: t.getBoundingClientRect().top + window.pageYOffset - 72, behavior: 'smooth' });
+      history.replaceState(null, '', id);
+    });
+  });
+  var hd = $('#header');
+  function onScroll() { hd.classList.toggle('sc', window.scrollY > 30); }
+  window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+  /* ===== Появление элементов при прокрутке ===== */
+  var io = new IntersectionObserver(function (en) {
+    en.forEach(function (x) { if (x.isIntersecting) { x.target.classList.add('in'); io.unobserve(x.target); } });
+  }, { threshold: .12 });
+  $$('.rv').forEach(function (el, i) { el.style.transitionDelay = (i % 3) * 80 + 'ms'; io.observe(el); });
+
+  /* ===== Счётчики статистики ===== */
+  function count(el) {
+    var end = parseFloat(el.dataset.count), dec = +el.dataset.dec || 0, suf = el.dataset.suf || '', st = null;
+    function step(ts) {
+      if (!st) st = ts;
+      var p = Math.min((ts - st) / 1800, 1), v = end * (1 - Math.pow(1 - p, 3));
+      el.textContent = (dec ? v.toFixed(dec) : Math.round(v).toLocaleString('ru-RU')) + suf;
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  var co = new IntersectionObserver(function (en) {
+    en.forEach(function (x) { if (x.isIntersecting) { count(x.target); co.unobserve(x.target); } });
+  }, { threshold: .6 });
+  $$('[data-count]').forEach(function (el) { co.observe(el); });
+
+  /* ===== Кнопки в карточках подставляют услугу в форму ===== */
+  $$('[data-s]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var sel = $('#service'), opt = $$('option', sel).filter(function (o) { return o.textContent.indexOf(b.dataset.s) === 0; })[0];
+      if (opt) sel.value = opt.textContent;
+    });
+  });
+
+  /* ===== Валидация формы и модальное окно ===== */
+  function mark(id, ok) { $('#' + id).closest('.field').classList.toggle('bad', !ok); return ok; }
+  function validate() {
+    var f = $('#file').files[0];
+    return [
+      mark('name', /^[A-Za-zА-Яа-яЁёҢңӨөҮү\s'-]{2,}$/.test($('#name').value.trim())),
+      mark('phone', /^\+996\d{9}$/.test($('#phone').value.replace(/[\s()-]/g, ''))),
+      mark('service', !!$('#service').value),
+      mark('file', !f || f.size <= 5 * 1024 * 1024)
+    ].every(Boolean);
+  }
+  ['name', 'phone', 'service', 'file'].forEach(function (id) {
+    $('#' + id).addEventListener('input', function () { if ($('#' + id).closest('.field').classList.contains('bad')) validate(); });
+  });
+  $('#phone').addEventListener('focus', function () { if (!this.value) this.value = '+996 '; });
+
+  var modal = $('#modal'), form = $('#form');
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (!validate()) { var f = $('.field.bad input, .field.bad select', form); if (f) f.focus(); return; }
+    /* Здесь подключите отправку данных, например fetch() на Formspree или свой сервер */
+    $('#mtext').textContent = 'Спасибо, ' + $('#name').value.trim() + '! Мы свяжемся с вами в WhatsApp по номеру ' + $('#phone').value.trim() + '.';
+    modal.classList.add('show'); form.reset(); $('#close').focus();
+  });
+  function closeModal() { modal.classList.remove('show'); }
+  $('#close').addEventListener('click', closeModal);
+  modal.addEventListener('click', function (e) { if (e.target === modal) closeModal(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closeModal(); closeMenu(); } });
+
+  $('#year').textContent = new Date().getFullYear();
+})();
+</script>
+</body>
+</html>
